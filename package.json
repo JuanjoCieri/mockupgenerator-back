@@ -11,6 +11,8 @@
   "author": "JuanjoCieri",
   "license": "ISC",
   "dependencies": {
-    "puppeteer": "^20.8.2"
+    "fs": "^0.0.1-security",
+    "puppeteer": "^20.8.2",
+    "sharp": "^0.32.3"
   }
 }
