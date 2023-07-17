@@ -10,7 +10,7 @@ async function captureScreenshotTor() {
   const page = await browser.newPage();
 
   const viewportWidth = 1100;
-  const viewportHeight = 800;
+  const viewportHeight = 870;
 
   await page.setViewport({
     width: viewportWidth,
@@ -29,7 +29,7 @@ async function captureScreenshotTor() {
   const sharpScreenshot = await sharp(screenshotBuffer)
     .affine([
       [1, 0.1],
-      [0.1, 0.95],
+      [0.01, 0.9],
     ], {
       background: 'transparent',
       interpolator: sharp.interpolators.nohalo
@@ -42,8 +42,8 @@ async function captureScreenshotTor() {
     .composite([
       {
         input: sharpScreenshot,
-        top: 408,
-        left: 508,
+        top: 500,
+        left: 500,
       },
     ])
     .toBuffer();
