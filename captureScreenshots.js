@@ -1,15 +1,12 @@
-import fs from "fs";
 import puppeteer from "puppeteer";
 import sharp from "sharp";
-import path from "path";
 
-export async function captureScreenshots() {
+export async function captureScreenshots(url) {
   const browser = await puppeteer.launch({
     headless: true,
   });
   const page = await browser.newPage();
-  await page.goto("https://recursos-web-ten.vercel.app/");
-  // await new Promise((resolve) => setTimeout(resolve, 5000));
+  await page.goto(url);
 
   const screenshots = [
     {
@@ -78,6 +75,8 @@ export async function captureScreenshots() {
     },
   ];
 
+  const images = [];
+
   for (const screenshot of screenshots) {
     await page.setViewport({
       width: screenshot.viewportWidth,
@@ -99,25 +98,14 @@ export async function captureScreenshots() {
       ])
       .toBuffer();
 
-    const carpeta = "imagenes/ima";
-    const rutaCompleta = path.resolve(carpeta);
-
-    if (!fs.existsSync(rutaCompleta)) {
-      fs.mkdirSync(rutaCompleta, { recursive: true });
-    }
-
-    fs.writeFile(
-      path.join(rutaCompleta, screenshot.filename),
-      finalImageBuffer,
-      (err) => {
-        if (err) {
-          console.error("Error al guardar la imagen final:", err);
-          return;
-        }
-        console.log("Imagen final guardada exitosamente");
-      }
-    );
+    images.push({
+      filename: screenshot.filename,
+      imageBuffer: finalImageBuffer,
+    });
   }
 
   await browser.close();
+
+  return images;
+
 }

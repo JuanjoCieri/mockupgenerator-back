@@ -1,10 +1,11 @@
 import express from "express";
-import fs from "fs";
-import path from "path";
 import { captureScreenshots } from "./captureScreenshots.js";
+import cors from "cors";
 
 const app = express();
 const PORT = 3000;
+
+app.use(cors());
 
 app.get("/captures", async (req, res) => {
   const { url } = req.query;
@@ -13,23 +14,38 @@ app.get("/captures", async (req, res) => {
     return res.status(400).json({ error: "Missing URL parameter" });
   }
 
-  await captureScreenshots(url);
+  const images = await captureScreenshots(url);
 
-  // Get the current directory path using import.meta.url
-  const currentDir = new URL(".", import.meta.url).pathname;
+  const deviceMap = {};
 
-  const imagesFolder = path.join(currentDir, "imagenes", "ima");
-  const imageFiles = fs.readdirSync(imagesFolder);
+  for (const image of images) {
+    const device = getDeviceFromFileName(image.filename);
+    if (!deviceMap[device]) {
+      deviceMap[device] = [];
+    }
+    deviceMap[device].push(image);
+  }
 
-  const images = imageFiles.map((filename) => ({
-    filename,
-    imageUrl: `http://localhost:${PORT}/imagenes/ima/${filename}`,
+  const responseArray = Object.keys(deviceMap).map((device) => ({
+    device,
+    photos: deviceMap[device],
   }));
 
-  res.json({ images });
+  res.json(responseArray);
 });
 
-app.use("/imagenes/ima", express.static("imagenes/ima"));
+function getDeviceFromFileName(filename) {
+  if (filename.includes("laptop")) {
+    return "Laptop";
+  } else if (filename.includes("desktop")) {
+    return "Desktop";
+  } else if (filename.includes("phone")) {
+    return "Móvil";
+  } else if (filename.includes("tablet")) {
+    return "Tablet";
+  }
+  return "other";
+}
 
 app.listen(PORT, () => {
   console.log(`Servidor Express escuchando en el puerto ${PORT}`);
