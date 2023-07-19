@@ -1,226 +1,36 @@
+import express from "express";
 import fs from "fs";
-import puppeteer from "puppeteer";
-import sharp from "sharp";
 import path from "path";
+import { captureScreenshots } from "./captureScreenshots.js";
 
-async function laptopMockup() {
-  const browser = await puppeteer.launch({
-    headless: true,
-  });
-  const page = await browser.newPage();
+const app = express();
+const PORT = 3000;
 
-  const viewportWidth = 1104;
-  const viewportHeight = 690;
+app.get("/captures", async (req, res) => {
+  const { url } = req.query;
 
-  await page.setViewport({
-    width: viewportWidth,
-    height: viewportHeight,
-    deviceScaleFactor: 1,
-  });
-
-  await page.goto("https://recursos-web-ten.vercel.app/");
-
-  await new Promise((resolve) => setTimeout(resolve, 5000));
-
-  const screenshotBuffer = await page.screenshot();
-
-  await browser.close();
-
-  const mockupBuffer = await sharp("assets/laptopMockup.png").toBuffer();
-
-  const finalImageBuffer = await sharp(mockupBuffer)
-    .composite([
-      {
-        input: screenshotBuffer,
-        top: 308,
-        left: 408,
-      },
-    ])
-    .toBuffer();
-
-  const carpeta = "imagenes/ima";
-  const rutaCompleta = path.resolve(carpeta);
-
-  if (!fs.existsSync(rutaCompleta)) {
-    fs.mkdirSync(rutaCompleta, { recursive: true });
+  if (!url) {
+    return res.status(400).json({ error: "Missing URL parameter" });
   }
 
-  fs.writeFile(
-    path.join(rutaCompleta, "imagen-final.png"),
-    finalImageBuffer,
-    (err) => {
-      if (err) {
-        console.error("Error al guardar la imagen final:", err);
-        return;
-      }
-      console.log("Imagen final guardada exitosamente");
-    }
-  );
-}
+  await captureScreenshots(url);
 
-async function laptopTorMockup() {
-  const browser = await puppeteer.launch({
-    headless: true,
-  });
-  const page = await browser.newPage();
+  // Get the current directory path using import.meta.url
+  const currentDir = new URL(".", import.meta.url).pathname;
 
-  const viewportWidth = 1104;
-  const viewportHeight = 690;
+  const imagesFolder = path.join(currentDir, "imagenes", "ima");
+  const imageFiles = fs.readdirSync(imagesFolder);
 
-  await page.setViewport({
-    width: viewportWidth,
-    height: viewportHeight,
-    deviceScaleFactor: 1,
-  });
+  const images = imageFiles.map((filename) => ({
+    filename,
+    imageUrl: `http://localhost:${PORT}/imagenes/ima/${filename}`,
+  }));
 
-  await page.goto("https://recursos-web-ten.vercel.app/");
+  res.json({ images });
+});
 
-  await new Promise((resolve) => setTimeout(resolve, 5000));
+app.use("/imagenes/ima", express.static("imagenes/ima"));
 
-  const screenshotBuffer = await page.screenshot();
-
-  await browser.close();
-
-  const mockupBuffer = await sharp("assets/desktopTorMockup.png").toBuffer();
-
-  const finalImageBuffer = await sharp(mockupBuffer)
-    .composite([
-      {
-        input: screenshotBuffer,
-        top: 308,
-        left: 408,
-      },
-    ])
-    .toBuffer();
-
-  const carpeta = "imagenes/ima";
-  const rutaCompleta = path.resolve(carpeta);
-
-  if (!fs.existsSync(rutaCompleta)) {
-    fs.mkdirSync(rutaCompleta, { recursive: true });
-  }
-
-  fs.writeFile(
-    path.join(rutaCompleta, "imagen-final.png"),
-    finalImageBuffer,
-    (err) => {
-      if (err) {
-        console.error("Error al guardar la imagen final:", err);
-        return;
-      }
-      console.log("Imagen final guardada exitosamente");
-    }
-  );
-}
-
-async function desktopMockup() {
-  const browser = await puppeteer.launch({
-    headless: true,
-  });
-  const page = await browser.newPage();
-
-  const viewportWidth = 1143;
-  const viewportHeight = 649;
-
-  await page.setViewport({
-    width: viewportWidth,
-    height: viewportHeight,
-    deviceScaleFactor: 1,
-  });
-
-  await page.goto("https://recursos-web-ten.vercel.app/");
-
-  await new Promise((resolve) => setTimeout(resolve, 5000));
-
-  const screenshotBuffer = await page.screenshot();
-
-  await browser.close();
-
-  const mockupBuffer = await sharp("assets/desktopMockup.png").toBuffer();
-
-  const finalImageBuffer = await sharp(mockupBuffer)
-    .composite([
-      {
-        input: screenshotBuffer,
-        top: 218,
-        left: 381,
-      },
-    ])
-    .toBuffer();
-
-  const carpeta = "imagenes/ima";
-  const rutaCompleta = path.resolve(carpeta);
-
-  if (!fs.existsSync(rutaCompleta)) {
-    fs.mkdirSync(rutaCompleta, { recursive: true });
-  }
-
-  fs.writeFile(
-    path.join(rutaCompleta, "imagen-final.png"),
-    finalImageBuffer,
-    (err) => {
-      if (err) {
-        console.error("Error al guardar la imagen final:", err);
-        return;
-      }
-      console.log("Imagen final guardada exitosamente");
-    }
-  );
-}
-
-async function tabletMockup() {
-  const browser = await puppeteer.launch({
-    headless: true,
-  });
-  const page = await browser.newPage();
-
-  const viewportWidth = 714;
-  const viewportHeight = 948;
-
-  await page.setViewport({
-    width: viewportWidth,
-    height: viewportHeight,
-    deviceScaleFactor: 1,
-  });
-
-  await page.goto("https://recursos-web-ten.vercel.app/");
-
-  await new Promise((resolve) => setTimeout(resolve, 5000));
-
-  const screenshotBuffer = await page.screenshot();
-
-  await browser.close();
-
-  const mockupBuffer = await sharp("assets/tabletMockup.png").toBuffer();
-
-  const finalImageBuffer = await sharp(mockupBuffer)
-    .composite([
-      {
-        input: screenshotBuffer,
-        top: 270,
-        left: 393,
-      },
-    ])
-    .toBuffer();
-
-  const carpeta = "imagenes/ima";
-  const rutaCompleta = path.resolve(carpeta);
-
-  if (!fs.existsSync(rutaCompleta)) {
-    fs.mkdirSync(rutaCompleta, { recursive: true });
-  }
-
-  fs.writeFile(
-    path.join(rutaCompleta, "imagen-final.png"),
-    finalImageBuffer,
-    (err) => {
-      if (err) {
-        console.error("Error al guardar la imagen final:", err);
-        return;
-      }
-      console.log("Imagen final guardada exitosamente");
-    }
-  );
-}
-
-laptopTorMockup();  
+app.listen(PORT, () => {
+  console.log(`Servidor Express escuchando en el puerto ${PORT}`);
+});
