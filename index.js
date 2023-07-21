@@ -6,7 +6,12 @@ import { getDeviceFromFileName } from "./functions/getDeviceFromFileName.js";
 const app = express();
 const PORT = 3000;
 
-app.use(cors());
+app.use(
+  cors({
+    credentials: true,
+    origin: "http://localhost:5173",
+  })
+);
 
 app.get("/captures", async (req, res) => {
   const { url } = req.query;
