@@ -1,6 +1,7 @@
 import express from "express";
-import { captureScreenshots } from "./captureScreenshots.js";
+import { captureScreenshots } from "./functions/captureScreenshots.js";
 import cors from "cors";
+import { getDeviceFromFileName } from "./functions/getDeviceFromFileName.js";
 
 const app = express();
 const PORT = 3000;
@@ -33,19 +34,6 @@ app.get("/captures", async (req, res) => {
 
   res.json(responseArray);
 });
-
-function getDeviceFromFileName(filename) {
-  if (filename.includes("laptop")) {
-    return "Laptop";
-  } else if (filename.includes("desktop")) {
-    return "Desktop";
-  } else if (filename.includes("phone")) {
-    return "Móvil";
-  } else if (filename.includes("tablet")) {
-    return "Tablet";
-  }
-  return "other";
-}
 
 app.listen(PORT, () => {
   console.log(`Servidor Express escuchando en el puerto ${PORT}`);
