@@ -34,12 +34,12 @@ export async function captureScreenshots(url) {
       filename: "laptop2Mockup.png",
     },
     {
-      mockupPath: "assets/desktopTorMockup.png",
-      viewportWidth: 1104,
-      viewportHeight: 690,
-      top: 308,
-      left: 408,
-      filename: "desktopTorMockup.png",
+      mockupPath: "assets/desktop2Mockup.png",
+      viewportWidth: 1293,
+      viewportHeight: 822,
+      top: 485,
+      left: 314,
+      filename: "desktop2Mockup.png",
     },
     {
       mockupPath: "assets/desktopMockup.png",
