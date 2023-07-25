@@ -7,7 +7,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 function setHeaders(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "https://mockupgenerator.vercel.app/");
+  res.header("Access-Control-Allow-Origin", "https://mockupgenerator.vercel.app");
   res.header("Access-Control-Allow-Credentials", "true");
   res.header(
     "Access-Control-Allow-Headers",
@@ -25,7 +25,7 @@ app.use(setHeaders);
 app.use(
   cors({
     credentials: true,
-    origin: "https://mockupgenerator.vercel.app/",
+    origin: "https://mockupgenerator.vercel.app",
   })
 );
 
