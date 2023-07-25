@@ -4,7 +4,7 @@ import cors from "cors";
 import { getDeviceFromFileName } from "./functions/getDeviceFromFileName.js";
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 function setHeaders(req, res, next) {
   res.header("Access-Control-Allow-Origin", "http://localhost:5173");
