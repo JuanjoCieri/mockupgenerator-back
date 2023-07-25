@@ -9,6 +9,8 @@ export async function captureScreenshots(url) {
     });
     const page = await browser.newPage();
     await page.goto(url);
+    
+    await new Promise((resolve) => setTimeout(resolve, 4000));
 
     const screenshots = [
       {
